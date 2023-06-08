@@ -9,7 +9,7 @@ from cv_bridge import CvBridge, CvBridgeError
 # Initialize the ROS Node named 'cv_tools'
 rospy.init_node('cv_tools', anonymous=True)
  
-# Initialize the CvBridge class
+# Initialize CvBridge class
 bridge = CvBridge()
 
 # Define a callback for the Image message
