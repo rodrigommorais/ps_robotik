@@ -1,8 +1,10 @@
 import rospy
 import tf
 import geometry_msgs.msg
+import math
+import numpy as np
 
-def tf_listener():
+def pose():
     # Initialize node
     rospy.init_node('tf_listener_node', anonymous=True)
     # TF message listener
@@ -19,14 +21,17 @@ def tf_listener():
             print('Rotation:', rot)
             
             ## GET POSE, ANGLES##
-            
+            x = trans[0]
+            y = trans[1]
+            theta = math.acos(((rot[0][0] + rot[1][1] + rot[2][2]) - 1) / 2)
             
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             rospy.logwarn('TF lookup exception occurred.')
-        rate.sleep()
+    return x,y,theta
     
 if __name__ == '__main__':
     try:
         tf_listener()
+        rate.sleep()
     except rospy.ROSInterruptException:
         pass
