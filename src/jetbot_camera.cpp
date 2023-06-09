@@ -72,7 +72,7 @@ bool aquireFrame()
 	sensor_msgs::CameraInfo cam_info_msg;
 	std::string camera_name;
 	std::string calib_path;
-	calib_path = "/home/jetbot/niko/workspace/catkin_ws/src/jetbot_ros/ost.yaml";
+	calib_path = "/home/jetbot11/workspace/catkin_ws/src/jetbot_ros/ost.yaml";
 	camera_name = "narrow_stereo";
     camera_calibration_parsers::readCalibrationYml(
     calib_path, camera_name, cam_info_msg);
