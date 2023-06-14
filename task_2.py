@@ -1,10 +1,11 @@
 import numpy as np
 
+from motion import moveRobot
+
 
 class Object:
 
     def __init__(self, form, x, y, color) -> None:
-        # static variables
         self.form: str = form
         self.x: float = x
         self.y: float = y
@@ -14,7 +15,6 @@ class Object:
 class Pose:
 
     def __init__(self, x, y, angle) -> None:
-        # static variables
         self.x: float = x
         self.y: float = y
         self.angle: float = angle
@@ -29,6 +29,7 @@ def select_next(pose, objects_left) -> Object:
         object_left_distance = np.sqrt((object_left.x-pose.x)**2 + (object_left.y-pose.y)**2)
         if object_left_distance < min_distance:
             next_object = object_left
+            min_distance = object_left_distance
 
     return next_object
 
@@ -92,3 +93,31 @@ def plan_trajectory(objects):
         objects_left = objects_left.remove(next_object)
 
     return planned_trajectory
+
+
+def drive_trajectory(objects):
+
+    planned_trajectory = plan_trajectory(objects)
+
+    x = current_pose.x
+    y = current_pose.y
+    angle = current_pose.angle
+
+    for waypoint in planned_trajectory:
+
+        dest_x = waypoint.x
+        dest_y = waypoint.y
+
+        moveRobot(x, y, angle, dest_x, dest_y)
+        current_pose = update_pose()
+
+        x = current_pose.x
+        y = current_pose.y
+        angle = current_pose.angle
+
+
+current_pose = Pose(0,0,0)
+
+objects = [Pose(1,1,0), Pose(2,1,0), Pose(2,2,1)]
+
+drive_trajectory(objects)
