@@ -4,7 +4,7 @@ import geometry_msgs.msg
 import math
 import numpy as np
 
-def pose():
+def get_pose():
     # Initialize node
     rospy.init_node('tf_listener_node', anonymous=True)
     # TF message listener

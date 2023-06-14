@@ -1,6 +1,7 @@
 import numpy as np
 
 from motion import moveRobot
+from scripts.pose import get_pose
 
 
 class Object:
@@ -20,7 +21,7 @@ class Pose:
         self.angle: float = angle
 
 
-def select_next(pose, objects_left) -> Object:
+def select_next(pose, objects_left):
 
     next_object: Object
     min_distance = 1000
@@ -73,31 +74,36 @@ def trajectory_around_object(pose, next_object):
     return planned_trajectory
 
 
-def plan_trajectory(objects):
+def plan_trajectory(objects, current_pose):
 
     objects_left = objects
-    initial_pose = Pose(0, 0, 0)  
-    planned_trajectory = [initial_pose]
-    pose = initial_pose
+    pose = current_pose  
+    planned_trajectory = [pose]
+    count = 0
 
     while objects_left != []:
 
         next_object = select_next(pose, objects_left)
 
         next_trajectory = trajectory_until_object(pose, next_object)
-        planned_trajectory.append(next_trajectory)
+        planned_trajectory.extend(next_trajectory)
 
         next_trajectory = trajectory_around_object(pose, next_object)
-        planned_trajectory.append(next_trajectory)  
+        planned_trajectory.extend(next_trajectory)  
 
         objects_left = objects_left.remove(next_object)
+
+        count = count + 1        
+        if count > 10000: 
+            print("Error in planning the trajectory")
+            break
 
     return planned_trajectory
 
 
-def drive_trajectory(objects):
+def drive_trajectory(objects, current_pose):
 
-    planned_trajectory = plan_trajectory(objects)
+    planned_trajectory = plan_trajectory(objects, current_pose)
 
     x = current_pose.x
     y = current_pose.y
@@ -109,15 +115,15 @@ def drive_trajectory(objects):
         dest_y = waypoint.y
 
         moveRobot(x, y, angle, dest_x, dest_y)
-        current_pose = update_pose()
+        current_pose = get_pose()
 
         x = current_pose.x
         y = current_pose.y
         angle = current_pose.angle
 
 
-current_pose = Pose(0,0,0)
+current_pose = Pose(0, 0, 0)
 
-objects = [Pose(1,1,0), Pose(2,1,0), Pose(2,2,1)]
+objects = [Object("cube", 1, 1, "blue"), Pose("cube", 2, 1, "red"), Pose("cube", 2, 3, "blue")]
 
-drive_trajectory(objects)
+drive_trajectory(objects, current_pose)
