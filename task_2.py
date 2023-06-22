@@ -32,6 +32,8 @@ def select_next(pose, objects_left):
             next_object = object_left
             min_distance = object_left_distance
 
+    print(next_object)
+
     return next_object
 
 
@@ -50,6 +52,8 @@ def trajectory_until_object(pose, next_object):
 
     for i in num_discretization_step:
         planned_trajectory.append(Pose(x_in_trajectory[i], y_in_trajectory[i], angle_in_trajectory[i]))
+
+    print(planned_trajectory)
 
     return planned_trajectory
 
@@ -70,6 +74,8 @@ def trajectory_around_object(pose, next_object):
     
     if next_object.color == "red":
         plan_trajectory = reversed(plan_trajectory)
+
+    print(planned_trajectory)
 
     return planned_trajectory
 
@@ -98,6 +104,8 @@ def plan_trajectory(objects, current_pose):
             print("Error in planning the trajectory")
             break
 
+    print(planned_trajectory)
+
     return planned_trajectory
 
 
@@ -124,6 +132,6 @@ def drive_trajectory(objects, current_pose):
 
 current_pose = Pose(0, 0, 0)
 
-objects = [Object("cube", 1, 1, "blue"), Pose("cube", 2, 1, "red"), Pose("cube", 2, 3, "blue")]
+objects = [Object("cube", 1, 1, "blue"), Object("cube", 2, 1, "red"), Object("cube", 2, 3, "blue")]
 
 drive_trajectory(objects, current_pose)
