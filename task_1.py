@@ -24,6 +24,7 @@ def plot_trajectory(planned_trajectory):
     plt.ylim([0, 1.485])
     plt.grid()
     plt.plot(x_plot, y_plot, '-o', color='orange')
+    plt.title("Arena - Trajectory task 1")
     plt.show()
 
 def plan_trajectory(num_discretization_step):
@@ -56,7 +57,7 @@ def plan_trajectory(num_discretization_step):
 
 if __name__ == '__main__':
     #current_pose = get_pose()
-    num_discretization_step = 15
+    num_discretization_step = 11
     planned_trajectory = plan_trajectory(num_discretization_step)
     #drive_trajectory(planned_trajectory)
 
