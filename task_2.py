@@ -1,30 +1,12 @@
 import numpy as np
-
-from motion import moveRobot
-from scripts.pose import get_pose
-
-
-class Object:
-
-    def __init__(self, form, x, y, color) -> None:
-        self.form: str = form
-        self.x: float = x
-        self.y: float = y
-        self.color: str = color
-
-
-class Pose:
-
-    def __init__(self, x, y, angle) -> None:
-        self.x: float = x
-        self.y: float = y
-        self.angle: float = angle
+from scripts.pose import get_pose, Pose, Object
+from scripts.motion import drive_trajectory
 
 
 def select_next(pose, objects_left):
 
     next_object: Object
-    min_distance = 1000
+    min_distance = 3
 
     for object_left in objects_left:
         object_left_distance = np.sqrt((object_left.x-pose.x)**2 + (object_left.y-pose.y)**2)
@@ -42,7 +24,7 @@ def trajectory_until_object(pose, next_object):
     start = pose
     goal = Pose(next_object.x, next_object.y, 0)
     distance = np.sqrt((goal.x-start.x)**2 + (goal.y-start.y)**2)
-    num_discretization_step = round(distance*10)
+    num_discretization_step = round(distance*5)
 
     x_in_trajectory = np.linspace(start.x, goal.x, num_discretization_step)
     y_in_trajectory = np.linspace(start.y, goal.y, num_discretization_step)
@@ -61,7 +43,7 @@ def trajectory_until_object(pose, next_object):
 def trajectory_around_object(pose, next_object):
 
     start = pose
-    radius = 0.3
+    radius = 0.15
     distance = 2*np.pi*radius
     num_discretization_step = round(distance*10)
     planned_trajectory = []
@@ -103,35 +85,16 @@ def plan_trajectory(objects, current_pose):
         if count > 10000: 
             print("Error in planning the trajectory")
             break
+    
+    planned_trajectory.extend(Pose(0,0,0))
 
     print(planned_trajectory)
 
     return planned_trajectory
 
 
-def drive_trajectory(objects, current_pose):
-
+if __name__ == '__main__':
+    current_pose = get_pose()
+    objects = [Object("cube", 0.2, 0.2, "blue"), Object("cube", 0.2, 0.4, "red")]
     planned_trajectory = plan_trajectory(objects, current_pose)
-
-    x = current_pose.x
-    y = current_pose.y
-    angle = current_pose.angle
-
-    for waypoint in planned_trajectory:
-
-        dest_x = waypoint.x
-        dest_y = waypoint.y
-
-        moveRobot(x, y, angle, dest_x, dest_y)
-        current_pose = get_pose()
-
-        x = current_pose.x
-        y = current_pose.y
-        angle = current_pose.angle
-
-
-current_pose = Pose(0, 0, 0)
-
-objects = [Object("cube", 1, 1, "blue"), Object("cube", 2, 1, "red"), Object("cube", 2, 3, "blue")]
-
-drive_trajectory(objects, current_pose)
+    drive_trajectory(planned_trajectory)

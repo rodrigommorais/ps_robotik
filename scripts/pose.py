@@ -4,6 +4,23 @@ import geometry_msgs.msg
 import math
 import numpy as np
 
+class Object:
+
+    def __init__(self, form, x, y, color) -> None:
+        self.form: str = form
+        self.x: float = x
+        self.y: float = y
+        self.color: str = color
+
+
+class Pose:
+
+    def __init__(self, x, y, angle) -> None:
+        self.x: float = x
+        self.y: float = y
+        self.angle: float = angle
+
+
 def get_pose():
     # Initialize node
     rospy.init_node('tf_listener_node', anonymous=True)
