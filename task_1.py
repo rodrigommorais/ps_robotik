@@ -27,7 +27,7 @@ def plot_trajectory(planned_trajectory):
     plt.title("Arena - Trajectory task 1")
     plt.show()
 
-def plan_trajectory(num_discretization_step):
+def plan_trajectory(num_discretization_step, start):
     
     planned_trajectory = []
 
@@ -42,14 +42,14 @@ def plan_trajectory(num_discretization_step):
     for j in range(0,num_discretization_step):
         
         for i in range(first_x,last_x,direction):
-            x_in_trajectory = (i)*discretization_step + 0.05
-            y_in_trajectory = (j)*discretization_step + 0.05
+            x_in_trajectory = (i)*discretization_step + start[0]
+            y_in_trajectory = (j)*discretization_step + start[1]
             planned_trajectory.append(Pose(x_in_trajectory, y_in_trajectory, angle_in_trajectory))
         print(first_x, last_x)
         direction *= -1
         first_x, last_x = last_x + direction, first_x + direction
         angle_in_trajectory = (angle_in_trajectory+np.pi)%(2*np.pi)
-    planned_trajectory.append(Pose(0.05, 0.05, 0))
+    planned_trajectory.append(start)
 
     plot_trajectory(planned_trajectory)
 
@@ -57,7 +57,7 @@ def plan_trajectory(num_discretization_step):
 
 if __name__ == '__main__':
     #current_pose = get_pose()
-    num_discretization_step = 11
+    num_discretization_step = 15
     planned_trajectory = plan_trajectory(num_discretization_step)
     #drive_trajectory(planned_trajectory)
 
